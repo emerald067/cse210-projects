@@ -1,3 +1,9 @@
+// Exceeding feature implemented:
+// - Instead of a single scripture, the program uses a ScriptureLibrary class that stores multiple scriptures in-code.
+// - Each time the program runs, it randomly selects a scripture for the user to memorize.
+// - This exceeds the core requirement of using only one scripture and adds variety to the memorization practice.
+// - Scriptures are included directly in the code, so no external files are needed.
+
 using System;
 
 namespace ScriptureMemorizer
@@ -6,16 +12,17 @@ namespace ScriptureMemorizer
     {
         static void Main(string[] args)
         {
-            // Verse range (Proverbs 3:5-6)
-            var reference = new Reference("Proverbs", 3, 5, 6);
-            var text = "Trust in the Lord with all thine heart; and lean not unto thine own understanding. " +
-                       "In all thy ways acknowledge him, and he shall direct thy paths.";
+            // Create the in-code scripture library
+            ScriptureLibrary library = new ScriptureLibrary();
+            Scripture scripture = library.GetRandomScripture();
 
-            var scripture = new Scripture(reference, text);
+            if (scripture == null)
+            {
+                Console.WriteLine("No scriptures found.");
+                return;
+            }
 
-            // Number of words to hide each step. 
-            const int wordsToHideEachStep = 3;
-
+            Random random = new Random();
             while (true)
             {
                 Console.Clear();
@@ -28,15 +35,15 @@ namespace ScriptureMemorizer
                     break;
                 }
 
-                // If scripture already completely hidden, end (final display already shown)
                 if (scripture.IsCompletelyHidden())
                 {
                     break;
                 }
 
-                scripture.HideRandomWords(wordsToHideEachStep);
+                // Randomize number of words to hide each step (1-3)
+                int wordsToHide = random.Next(1, 4);
+                scripture.HideRandomWords(wordsToHide);
 
-                // After hiding, if scripture is now completely hidden, show final and exit loop on next iteration.
                 if (scripture.IsCompletelyHidden())
                 {
                     Console.Clear();
@@ -46,11 +53,6 @@ namespace ScriptureMemorizer
                     break;
                 }
             }
-
-            // Program ends
         }
     }
 }
-
-
-
